@@ -55,6 +55,7 @@ end)
 
 
 RegisterCommand('testdrive', function(source, args, rawCommand)
+-- add command to make sure player is a dealership employee
 print("Test Driving a car")
 local vehicle = args[1] -- get car to test drive
 	-- if the big area blow does not work try
@@ -78,12 +79,48 @@ end
 --command to remove car
 
 -- get closest vehicle or vehicle player is in
+RegisterCommand('testddriveend', function(source, args, rawCommand)
+-- add command to make sure player is a dealership employee
+    local ped = GetPlayerPed( -1 )
 
+    if ( DoesEntityExist( ped ) and not IsEntityDead( ped ) ) then 
+        local pos = GetEntityCoords( ped )
 
+        if ( IsPedSittingInAnyVehicle( ped ) ) then 
+            local vehicle = GetVehiclePedIsIn( ped, false )
 
+            if ( GetPedInVehicleSeat( vehicle, -1 ) == ped ) then 
+                SetEntityAsMissionEntity( vehicle, true, true )
+                deleteCar( vehicle )
 
+                if ( DoesEntityExist( vehicle ) ) then 
+                	ShowNotification( "~r~Unable to return vehicle, try again." )
+                else 
+                	ShowNotification( "Vehicle returned." )
+                end 
+            else 
+                ShowNotification( "You must be in the driver's seat!" )
+            end 
+        else
+            local playerPos = GetEntityCoords( ped, 1 )
+            local inFrontOfPlayer = GetOffsetFromEntityInWorldCoords( ped, 0.0, distanceToCheck, 0.0 )
+            local vehicle = GetVehicleInDirection( playerPos, inFrontOfPlayer )
 
+            if ( DoesEntityExist( vehicle ) ) then 
+                SetEntityAsMissionEntity( vehicle, true, true )
+                deleteCar( vehicle )
 
+                if ( DoesEntityExist( vehicle ) ) then 
+                	ShowNotification( "~r~Unable to return vehicle, try again." )
+                else 
+                	ShowNotification( "Vehicle returned to dealer." )
+                end 
+            else 
+                ShowNotification( "You must be in or near a vehicle to end test drive." )
+            end 
+        end 
+    end 
+end )
 
 
 function SpawnVehicle(veh)
