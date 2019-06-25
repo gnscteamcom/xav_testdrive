@@ -57,7 +57,10 @@ end)
 RegisterCommand('testdrive', function(source, args, rawCommand)
 print("Test Driving a car")
 local vehicle = args[1] -- get car to test drive
-
+	-- if the big area blow does not work try
+	-- SpawnVehicle(vehicle)
+		
+		
 -- make changes to where car spawns and what not
   ESX.Game.SpawnVehicle(vehicle.model, Config.Zones.ShopOutside.Pos, Config.Zones.ShopOutside.Heading, function (vehicle)
     TaskWarpPedIntoVehicle(playerPed, vehicle, -1)
@@ -74,6 +77,7 @@ end
 
 --command to remove car
 
+-- get closest vehicle or vehicle player is in
 
 
 
@@ -82,4 +86,22 @@ end
 
 
 
-
+function SpawnVehicle(veh)
+    local x,y,z = table.unpack(GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 4.0, 0.5))
+    if veh == nil then veh = "adder" end
+    vehiclehash = GetHashKey(veh)
+    RequestModel(vehiclehash)
+    
+    Citizen.CreateThread(function() 
+        local waiting = 0
+        while not HasModelLoaded(vehiclehash) do
+            waiting = waiting + 100
+            Citizen.Wait(100)
+            if waiting > 10000 then
+                ShowNotification("~r~Could not load the vehicle model in time, a crash was prevented.")
+                break
+            end
+        end
+        CreateVehicle(vehiclehash, x, y, z, GetEntityHeading(PlayerPedId()), 1, 0)
+    end)
+end
