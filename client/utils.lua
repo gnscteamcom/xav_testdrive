@@ -1,5 +1,7 @@
 local NumberCharset = {}
 local Charset = {}
+local PlateUseSpace = true
+local PlateNumbers = 3
 
 for i = 48,  57 do table.insert(NumberCharset, string.char(i)) end
 
@@ -13,10 +15,10 @@ function GeneratePlate()
 	while true do
 		Citizen.Wait(2)
 		math.randomseed(GetGameTimer())
-		if Config.PlateUseSpace then
-			generatedPlate = string.upper('CAR' .. ' ' .. GetRandomNumber(Config.PlateNumbers))
+		if PlateUseSpace then
+			generatedPlate = string.upper('CAR' .. ' ' .. GetRandomNumber(PlateNumbers))
 		else
-			generatedPlate = string.upper('CAR' .. GetRandomNumber(Config.PlateNumbers))
+			generatedPlate = string.upper('CAR' .. GetRandomNumber(PlateNumbers))
 		end
 
 		ESX.TriggerServerCallback('haven_testdrive:isPlateTaken', function (isPlateTaken)
