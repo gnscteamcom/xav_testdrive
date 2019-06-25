@@ -10,7 +10,10 @@ local Keys = {
   ["NENTER"] = 201, ["N4"] = 108, ["N5"] = 60, ["N6"] = 107, ["N+"] = 96, ["N-"] = 97, ["N7"] = 117, ["N8"] = 61, ["N9"] = 118
 }
 
-ESX = nil
+local IsInShopMenu            = false
+local Categories              = {}
+local Vehicles 		      = {}
+ESX 			      = nil
 
 Citizen.CreateThread(function ()
 	while ESX == nil do
@@ -19,7 +22,14 @@ Citizen.CreateThread(function ()
 	end
 
 	Citizen.Wait(10000)
+		
+	ESX.TriggerServerCallback('haven_testdrive:getCategories', function (categories)
+		Categories = categories
+	end)
 
+	ESX.TriggerServerCallback('haven_testdrive:getVehicles', function (vehicles)
+		Vehicles = vehicles
+	end)
 end)
 
 RegisterNetEvent('esx:playerLoaded')
@@ -27,6 +37,20 @@ AddEventHandler('esx:playerLoaded', function(xPlayer)
 	ESX.PlayerData = xPlayer
 end)
 
+RegisterNetEvent('haven_testdrive:sendCategories')
+AddEventHandler('haven_testdrive:sendCategories', function (categories)
+	Categories = categories
+end)
+
+RegisterNetEvent('haven_testdrive:sendVehicles')
+AddEventHandler('haven_testdrive:sendVehicles', function (vehicles)
+	Vehicles = vehicles
+end)
+
+RegisterNetEvent('esx:setJob')
+AddEventHandler('esx:setJob', function (job)
+	ESX.PlayerData.job = job
+end)
 
 
 
@@ -41,7 +65,7 @@ local vehicle = args[1] -- get car to test drive
     local vehicleProps = ESX.Game.GetVehicleProperties(vehicle)
     vehicleProps.plate = newPlate
     SetVehicleNumberPlateText(vehicle, newPlate)
-    TriggerServerEvent('esx_vehicleshop:setVehicleOwnedSociety', playerData.job.name, vehicleProps)
+    --TriggerServerEvent('esx_vehicleshop:setVehicleOwnedSociety', playerData.job.name, vehicleProps)
     ESX.ShowNotification(_U('vehicle_purchased'))
   end)
 
