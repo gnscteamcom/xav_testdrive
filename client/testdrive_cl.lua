@@ -32,6 +32,8 @@ AddEventHandler('esx:setJob', function(job)
     ESX.PlayerData.job = job
 end)
 
+--------------------------------------------- TEST DRIVE COMMANDS START ---------------------------------------------
+
 RegisterCommand("testdrive", function(source, args, rawCommand)
 if canuse then
     print("Test Driving a car")
@@ -61,3 +63,38 @@ if canuse then
 end
 end)
 
+--------------------------------------------- TEST DRIVE COMMANDS END ---------------------------------------------
+
+--------------------------------------------- CAR DISPLAY COMMANDS START ---------------------------------------------
+
+local L1 = {x,y,z}
+local L2 = {x,y,z}
+local L3 = {x,y,z}
+local L4 = {x,y,z}
+
+-- Spawn 4 default cars
+local car1 = 69CHARGER
+local car2 = 69CHARGER
+local car3 = 69CHARGER
+local car4 = 69CHARGER
+
+-- Call Display function
+
+
+
+
+-- Look at bmvehicles on how to get car list to replace a car
+
+
+function DisplayCar(veh, carNum)
+    ESX.Game.SpawnVehicle(veh, coords, 90.0, function(vehicle)
+        SetVehicleNumberPlateText(vehicle, "DISPLAY" .. carNum)
+	FreezeEntityPosition(vehicle, true)
+	SetVehicleDoorsLocked(vehicle,4)
+	SetVehicleOnGroundProperly(vehicle)
+    end)
+end -- end function DisplayCar
+
+
+
+--------------------------------------------- CAR DISPLAY COMMANDS END ---------------------------------------------
