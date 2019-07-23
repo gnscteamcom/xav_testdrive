@@ -1,5 +1,6 @@
 ESX 			      = nil
 local PlayerData    = {}
+local testplate = "TESTCAR"
 canuse = false
 
 Citizen.CreateThread(function ()
@@ -19,7 +20,7 @@ end)
 RegisterNetEvent('esx:playerLoaded')
 AddEventHandler('esx:playerLoaded', function(xPlayer)
     PlayerData = xPlayer
-    if PlayerData.job.name == 'bmdealer' then
+    if PlayerData.job.name == 'cardealer' then
         canuse = true
         print("canUse Test Drive set to true")
     else
@@ -33,28 +34,23 @@ AddEventHandler('esx:setJob', function(job)
 end)
 
 --------------------------------------------- TEST DRIVE COMMANDS START ---------------------------------------------
-
+-- command to spawn car.... restricted to anyone set at cardealer job
 RegisterCommand("testdrive", function(source, args, rawCommand)
 if canuse then
     print("Test Driving a car")
     local vehicle = args[1] -- get car to test drive
-    print("arg is " .. vehicle)
+    print("Car is " .. vehicle) -- says what car your getting in F8 console
     local playerPed = PlayerPedId()
     local coords    = GetEntityCoords(playerPed)
-	-- if the big area blow does not work try
-	 
-    print("Setting plate")
-
+    print("Setting plate") -- F8 console saying that its setting the plate
     ESX.Game.SpawnVehicle(vehicle, coords, 90.0, function(vehicle)
         TaskWarpPedIntoVehicle(playerPed,  vehicle, -1)
-        SetVehicleNumberPlateText(vehicle, "CAR " .. math.random(1234, 9999))
+        SetVehicleNumberPlateText(vehicle, testplate) -- testplate is set above 
     end)
 end           
 end)
 
---command to remove car
-
--- get closest vehicle or vehicle player is in
+--command to remove car..... restricted to anyone set to cardealer job (This will delete "return" anycar even if it is not a testdrive car
 RegisterCommand('testdriveend', function(source, args, rawCommand)
 if canuse then
    local vehicle = GetVehiclePedIsIn(PlayerPedId(), false)
@@ -65,36 +61,3 @@ end)
 
 --------------------------------------------- TEST DRIVE COMMANDS END ---------------------------------------------
 
---------------------------------------------- CAR DISPLAY COMMANDS START ---------------------------------------------
-
-local L1 = {x,y,z}
-local L2 = {x,y,z}
-local L3 = {x,y,z}
-local L4 = {x,y,z}
-
--- Spawn 4 default cars
-local car1 = 69CHARGER
-local car2 = 69CHARGER
-local car3 = 69CHARGER
-local car4 = 69CHARGER
-
--- Call Display function
-
-
-
-
--- Look at bmvehicles on how to get car list to replace a car
-
-
-function DisplayCar(veh, carNum)
-    ESX.Game.SpawnVehicle(veh, coords, 90.0, function(vehicle)
-        SetVehicleNumberPlateText(vehicle, "DISPLAY" .. carNum)
-	FreezeEntityPosition(vehicle, true)
-	SetVehicleDoorsLocked(vehicle,4)
-	SetVehicleOnGroundProperly(vehicle)
-    end)
-end -- end function DisplayCar
-
-
-
---------------------------------------------- CAR DISPLAY COMMANDS END ---------------------------------------------
